@@ -8,6 +8,25 @@ const alertDiv = document.querySelector("#message");
 // create an empty item list
 let todoItems = [];
 
+
+//filter items
+const getItemFilter = function(type){
+    let filterItems = [];
+    switch (type) {
+        case 'todo':
+            filterItems = todoItems.filter((item)=> !item.isDone);
+            break;
+        case 'done':
+            filterItems = todoItems.filter((item)=> item.isDone);
+            break;
+        default:
+            filterItems = todoItems;
+    }
+    getList(filterItems);
+}
+
+
+
 //show the data from localstorage in the list
 const getList = function(todoItems){
     itemList.innerHTML = ""
