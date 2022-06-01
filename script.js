@@ -10,7 +10,7 @@ let todoItems = [];
 
 
 //filter items
-const getItemFilter = function(type){
+const getItemsFilter = function(type){
     let filterItems = [];
     switch (type) {
         case 'todo':
@@ -21,10 +21,81 @@ const getItemFilter = function(type){
             break;
         default:
             filterItems = todoItems;
-    }
+    };
     getList(filterItems);
+};
+
+//delete item
+const removeItem = function (item) {
+    const removeIndex = todoItems.indexOf(item);
+    todoItems.splice(removeIndex, 1);
 }
 
+
+//update item
+const updateItem = function (currentItemIndex, value){
+    const newItem = todoItems[currentItemIndex];
+    newItem.name = value;
+    todoItems.splice(currentItemIndex, 1, newItem);
+    setLocalStorage(todoItems);
+
+}
+
+const handleItem = function(itemData){
+    const items = document.querySelector('.list-group-item');
+    items.forEach((item)=>{
+        //done
+
+        if(item.querySelector('.title').getAttribute('data-time') == itemData.addedAt) {
+            item.querySelector('[data-done]').addEventListener('click', function(e) {
+                e.preventDefault();
+
+                const itemIndex = todoItems.indexOf(itemData);
+                const currentItem = todoItems[itemIndex];
+
+                const currentClass = currentItem.isDone
+                  ? "bi-check-circle-fill"
+                  : "bi-check-circle";
+
+                currentItem.isDone = currentItem.isDone ? false :true;
+                todoItems.splice(itemIndex, 1, currentItem);
+                setLocalStorage(todoItems);
+
+                const iconClass = currentItem.isDone
+                    ? "bi-check-circle-fill"
+                    : "bi-check-circle";
+
+
+                this.firstElementChild.classList.replace(currentClass, iconClass);
+                const filterType = document.querySelector("#tabValue").value;
+                getItemsFilter(filterType);
+
+            });
+
+            //edit
+            item.querySelector("[data-edit]").addEventListener("click", function (e) {
+                e.preventDefault();
+                itemInput.value = itemData.name;
+                document.querySelector("#objIndex").value = todoItems.indexOf(itemData);
+            });
+
+            //delete
+            item.querySelector("[data-delete]").addEventListener("click", function (e) {
+                e.preventDefault();
+                if (confirm("Are you sure you want to remove this item?")) {
+                    itemsList.removeChild(item);
+                    removeItem(itemData);
+                    setLocalStorage(todoItems);
+                    alertMessage("Item has been deleted", "alert-success");
+                    return todoItems.filter((item) => item != itemData);
+                };
+            });
+        };
+
+
+    });
+
+};
 
 
 //show the data from localstorage in the list
@@ -36,11 +107,11 @@ const getList = function(todoItems){
             const iconClass = item.isDone ? "bi-check-circle-fill" : "bi-check-circle";
 
             let liTag = `<li class="list-group-item d-flex justify-content-between align-items-center">
-            <span>${item.name}</span>
+            <span class="title" data-time=${item.addedAt}>${item.name}</span>
             <span>
-                <a href="#"> <i class="bi ${iconClass} green"></i></a>
-                <a href="#"> <i class="bi bi-pencil-square blue "></i></a>
-                <a href="#"> <i class="bi bi-trash red"> </i>
+                <a href="#" data-done> <i class="bi ${iconClass} green"></i></a>
+                <a href="#" data-edit> <i class="bi bi-pencil-square blue "></i></a>
+                <a href="#" data-delete> <i class="bi bi-trash red"> </i>
                 </a>
             </span>
         </li>`;
