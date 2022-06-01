@@ -64,16 +64,35 @@ document.addEventListener("DOMContentLoaded", ()=>{
             alert('Please enter a task....')
         }
         else{
-
-            const itemObj = {
-                name: itemName,
-                isDone: false,
-                addedAt: new Date().getTime()
+            const currentItemIndex = document.querySelector('#objIndex').value;
+            if (currentItemIndex) {
+                //update items
+                updateItem(currentItemIndex, itemName);
+                document.querySelector('#objIndex').value = '';
+                alert('Item has been updated')
+            }else {
+                const itemObj = {
+                    name: itemName,
+                    isDone: false,
+                    addedAt: new Date().getTime()
+                };
+                todoItems.push(itemObj);
+                setLocalStorage(todoItems);
+                alert('New item has been added')
             };
-            todoItems.push(itemObj);
-            setLocalStorage(todoItems);
+            getList(todoItems);
         }
-        getList(todoItems);
+        itemInput.value = '';
     });
-    getLocalStorage();
+
+
+    //filter tabs
+
+
+
+
+
+
+
+
 });
