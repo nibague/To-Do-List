@@ -87,12 +87,21 @@ document.addEventListener("DOMContentLoaded", ()=>{
 
 
     //filter tabs
+    filters.forEach((tab)=> {
+        tab.addEventListener('click', function (e) {
+            e.preventDefault();
+            const tabType = this.getAttribute('data-type');
+            document.querySelectorAll('.nav-link').forEach((nav)=> {
+                nav.classList.remove('active');
+            });
+            this.firstElementChild.classList.add('active');
+            getItemsFilter(tabType);
+            document.querySelector('#tabValue').value = tabType;
+        });
 
 
-
-
-
-
-
+    });
+    //load items
+    getLocalStorage();
 
 });
